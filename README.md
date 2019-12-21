@@ -32,9 +32,10 @@ To disable the user from stoping the "trojan" the desktop icons are diabled and 
 ## Combining Together
 Combining the bat and mp3 is done with [Bat To Exe Converter v3.2](https://www.softpedia.com/get/System/File-Management/Batch-To-Exe-Converter.shtml#download), find a better link if you can.
 1. Set the exe format to 32/64 bit Invisible
-2. Import .mp3 in embed tab (Make sure to change the mp3 name or refrence in .bat)
+2. Import .mp3 .vbs and main.bat into embed tab
 3. Set Extract to (For embedded items) to Downloads
 4. Set to request admin mode
-5. Convert & Done
+5. Paste the contence of RUN.bat into main window
+6. Convert & Done
  
 #### This shitty program was made in a day as a proof of concept and is poorly made in its current state, expect errors. More payloads and comments will be introduced as time goes on as to make it easier to understand and edit.
