@@ -6,8 +6,7 @@ IF %ERRORLEVEL% EQU 0 (
 ) ELSE (
 	cls
 	echo ---------------------------------------------
-	echo OI MATE START THIS BITCH IN FUKIN ADMIN MODE
-	echo OI MATE START THIS BITCH IN FUKIN ADMIN MODE
+	echo OI MATE START THIS IN ADMIN MODE TO WORK
 	echo ---------------------------------------------
 	echo.
 	pause >nul
