@@ -1,6 +1,6 @@
 Intvert
 ======
-A joke "Trojan" written in Batch, made to be put in a usb or combined with a .mp3 into an exe
+A joke "Trojan" written in Batch, made to be put on a usb and lauch silently
 
 ## "Payloads"
 #### Working
@@ -30,8 +30,9 @@ A joke "Trojan" written in Batch, made to be put in a usb or combined with a .mp
 The script creates a .bat on the desktop that deletes all leftover payloads and resets all edited regedit strings.
 To disable the user from stoping the "trojan" the desktop icons are diabled and taskmgr is disabled 
 
-## Combining Together
-Combining the bat and mp3 is done with Bat To Exe Converter v3.2, find a better link if you can.
+## Combining With mp3
+Combining the bat and 3 mp3's isn't needed but is recomended as no music will play as the payloads start (It feels kinda holo/empty), if you want to combine them its easily done with Bat To Exe Converter v3.2, but find somthing better if you can, seriously.
+### Steps:
 1. Set the exe format to 32/64 bit Invisible
 2. Import 3 .mp3 files into embed tab
 3. Set Extract to (For embedded items) to Downloads
