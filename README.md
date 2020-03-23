@@ -21,9 +21,9 @@ A joke "Trojan" written in Batch, made to be put on a usb and lauch silently
 * Bluescreens the computer to force restart (A restart was to lame)
 * Sets background to .jpg
 
-#### Disabled by Default
-* Moves everything from desktop/music/downloads/pictures into documents (Disabled) 
-* Fills desktop/music/downloads/pictures with random folders (Disabled)
+#### Disabled by Default, but can be enabled
+* Move everything from desktop/music/downloads/pictures into documents
+* Fill desktop/music/downloads/pictures with random folders
 
 ## Its Just A Prank
 The script creates a .bat on the desktop that deletes all leftover payloads and resets all edited regedit strings.
