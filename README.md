@@ -1,6 +1,6 @@
 Intvert
 ======
-A joke "Trojan" written in Batch, made to be put on a usb and lauch silently
+A joke "Trojan" written in Batch, made to scare the crap out of people, put on a usb and lauch silently or launch on 
 
 ## "Payloads"
 #### Working
@@ -26,7 +26,7 @@ A joke "Trojan" written in Batch, made to be put on a usb and lauch silently
 * Fill desktop/music/downloads/pictures with random folders
 
 ## Its Just A Prank
-The script creates a .bat on the desktop that deletes all leftover payloads and resets all edited regedit strings.
+The script creates a .bat on the desktop that deletes all leftover payload scripts and resets all edited regedit strings.
 To disable the user from stopping the "trojan" the desktop icons are disabled and taskmgr is disabled 
 
 ## Combining With mp3
@@ -46,4 +46,5 @@ Combining the bat and 3 mp3's isn't needed but is recommended as no music will p
 * 3.mp4 is for the Christmas payload
 
 #### This shitty program was made in a day as a proof of concept and is poorly made in its current state, expect errors. More payloads and comments will be introduced as time goes on as to make it easier to understand and edit.
+And yes I am still working on this
 
