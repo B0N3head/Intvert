@@ -1,7 +1,7 @@
 Intvert
 ======
-A joke "Trojan" written in Batch, made to scare the crap out of people, put on a usb and lauch silently
-
+A joke "Trojan" written in Batch, made to scare the crap out of people, put on a usb and lauch silently (Requires admin).
+#### This program is being replaced by Helpdesk written in c# (link soon)
 ## "Payloads"
 #### Working
 * Launch different payloads on different dates 
@@ -46,6 +46,5 @@ Combining the bat and 3 mp3's isn't needed but is recommended as no music will p
 * 3.mp4 is for the Christmas payload
 
 #### This shitty program was made in a day as a proof of concept and is poorly made in its current state, expect errors. More payloads and comments will be introduced as time goes on as to make it easier to understand and edit.
-And yes I am still working on this
 
 ;)
